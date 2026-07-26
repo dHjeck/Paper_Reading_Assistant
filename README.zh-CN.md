@@ -178,3 +178,16 @@ node test-smoke.js
 - [侧边栏状态规范](docs/paper-reading-assistant-side-panel-state-spec.md)
 - [后端 API 规范](docs/paper-reading-assistant-backend-api-spec.md)
 - [QA 检查表](docs/qa-checklist.md)
+
+## 第三方软件与致谢
+
+本项目包含并使用 Microsoft 开源项目
+[MarkItDown](https://github.com/microsoft/markitdown)，通过它将 HTML 和 PDF
+文档转换为 Markdown。MarkItDown 使用 MIT 许可证。
+
+仓库内的 MarkItDown 源码位于 `html_pdf2md/markitdown`。其原始版权声明、
+许可证和第三方软件声明均保留在该目录中。详细信息请参阅
+[THIRD_PARTY_NOTICES.md](THIRD_PARTY_NOTICES.md)。
+
+MarkItDown 是 Microsoft 的开源项目。Microsoft 不赞助、不背书、不维护
+Paper Reading Assistant，也不为本项目提供支持。

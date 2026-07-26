@@ -178,3 +178,19 @@ node test-smoke.js
 - [サイドパネル状態仕様](docs/paper-reading-assistant-side-panel-state-spec.md)
 - [バックエンド API 仕様](docs/paper-reading-assistant-backend-api-spec.md)
 - [QA チェックリスト](docs/qa-checklist.md)
+
+## サードパーティソフトウェアと謝辞
+
+本プロジェクトは、HTML および PDF 文書を Markdown に変換するために、
+Microsoft のオープンソースプロジェクト
+[MarkItDown](https://github.com/microsoft/markitdown) を使用しています。
+MarkItDown は MIT License の下で提供されています。
+
+同梱されている MarkItDown のソースコードは
+`html_pdf2md/markitdown` にあります。元の著作権表示、ライセンス、
+サードパーティ通知は同ディレクトリ内に保持されています。詳細は
+[THIRD_PARTY_NOTICES.md](THIRD_PARTY_NOTICES.md) を参照してください。
+
+MarkItDown は Microsoft のオープンソースプロジェクトです。Microsoft
+は Paper Reading Assistant のスポンサー、承認者、保守担当者ではなく、
+本プロジェクトのサポートも提供していません。

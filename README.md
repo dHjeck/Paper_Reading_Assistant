@@ -137,3 +137,16 @@ backend/
 - [Extension Design](docs/paper-reading-assistant-extension-design.md) — product overview
 - [Backend API Spec](docs/paper-reading-assistant-backend-api-spec.md) — endpoint contracts
 - [QA Checklist](docs/qa-checklist.md) — test matrix, smoke tests, known limitations
+
+## Third-Party Software and Acknowledgements
+
+This project includes and uses
+[Microsoft MarkItDown](https://github.com/microsoft/markitdown), licensed under
+the MIT License, to convert HTML and PDF documents into Markdown.
+
+The bundled source is located in `html_pdf2md/markitdown`. Its original
+copyright notice, license, and third-party notices are preserved in that
+directory. See [THIRD_PARTY_NOTICES.md](THIRD_PARTY_NOTICES.md) for details.
+
+MarkItDown is a Microsoft open-source project. Microsoft does not sponsor,
+endorse, maintain, or provide support for Paper Reading Assistant.
