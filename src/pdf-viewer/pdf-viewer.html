@@ -1,0 +1,73 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>PDF Viewer - Paper Reading Assistant</title>
+    <link rel="stylesheet" href="./pdf-viewer.css">
+  </head>
+  <body>
+    <div id="toolbar">
+      <div class="toolbar-group">
+        <button id="open-file-btn" data-i18n-title="pv_open_pdf" title="Open a local PDF file" data-i18n-text="pv_open_pdf">Open PDF</button>
+        <input type="file" id="file-input" accept="application/pdf,.pdf" hidden>
+        <span id="filename" class="filename" data-i18n-text="pv_no_file">No file loaded</span>
+      </div>
+      <div class="toolbar-group" id="page-controls">
+        <button id="prev-page-btn" disabled data-i18n-title="pv_prev_page" title="Previous page">&#9664;</button>
+        <span id="page-info">- / -</span>
+        <button id="next-page-btn" disabled data-i18n-title="pv_next_page" title="Next page">&#9654;</button>
+      </div>
+      <div class="toolbar-group" id="zoom-controls">
+        <button id="zoom-out-btn" disabled data-i18n-title="pv_zoom_out" title="Zoom out">&minus;</button>
+        <span id="zoom-level">100%</span>
+        <button id="zoom-in-btn" disabled data-i18n-title="pv_zoom_in" title="Zoom in">+</button>
+        <button id="zoom-fit-btn" disabled data-i18n-title="pv_fit_width" data-i18n-text="pv_fit" title="Fit to width">Fit</button>
+      </div>
+      <div class="toolbar-group" id="figure-controls">
+        <button id="figure-capture-btn" disabled data-i18n-title="pv_figure_capture" data-i18n-text="pv_figure_capture" title="Select a figure region to explain">Figure Capture</button>
+      </div>
+    </div>
+    <div id="viewer-body">
+      <div id="empty-state">
+        <p data-i18n-text="pv_empty_msg">Open a local PDF file to start reading.</p>
+        <button id="empty-open-btn" class="primary-btn" data-i18n-text="pv_choose_file">Choose PDF File</button>
+      </div>
+      <div id="loading-state" hidden>
+        <div class="spinner"></div>
+        <p data-i18n-text="pv_loading">Loading PDF&hellip;</p>
+      </div>
+      <div id="error-state" hidden>
+        <p id="error-message"></p>
+        <button id="error-retry-btn" class="primary-btn" data-i18n-text="pv_try_again">Try Again</button>
+      </div>
+      <div id="canvas-container" hidden>
+        <div id="page-wrapper">
+          <canvas id="pdf-canvas"></canvas>
+          <div id="text-layer"></div>
+          <div id="figure-overlay" class="pra-figure-overlay" hidden>
+            <div class="pra-figure-overlay__hint">
+              <span data-i18n-text="pv_drag_hint">Drag to select a figure region</span>
+              <button type="button" id="figure-overlay-cancel" class="pra-figure-overlay__hint-cancel" data-i18n-text="pv_cancel">Cancel</button>
+            </div>
+            <div class="pra-figure-overlay__selection" hidden></div>
+            <div class="pra-figure-overlay__warning" hidden role="status" data-i18n-text="pv_small_region">Region is quite small - results may be less accurate.</div>
+            <div class="pra-figure-overlay__actions" hidden>
+              <button type="button" id="figure-use-btn" data-primary="true" data-i18n-text="pv_use_region">Use This Region</button>
+              <button type="button" id="figure-again-btn" data-i18n-text="pv_select_again">Select Again</button>
+              <button type="button" id="figure-cancel-btn" data-i18n-text="pv_cancel">Cancel</button>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+    <div id="status-bar" aria-live="polite"></div>
+
+    <script src="../shared/contracts.js"></script>
+    <script src="../shared/i18n.js"></script>
+    <script src="./lib/pdf.min.js"></script>
+    <script src="./pdf-loader.js"></script>
+    <script src="./pdf-renderer.js"></script>
+    <script src="./pdf-viewer.js"></script>
+  </body>
+</html>

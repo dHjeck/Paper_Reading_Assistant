@@ -1,0 +1,225 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Paper Reading Assistant Settings</title>
+    <style>
+      :root {
+        --paper-bg: #f5ede2;
+        --paper-card: #fffaf2;
+        --paper-line: #d8d1c6;
+        --paper-text: #2f2418;
+        --paper-muted: #6e6257;
+        --paper-accent: #a85a22;
+        --paper-soft: #f0e1c3;
+        --paper-error: #a23422;
+        --paper-ok: #2c6a3b;
+      }
+
+      * {
+        box-sizing: border-box;
+      }
+
+      body {
+        margin: 0;
+        padding: 24px;
+        background: linear-gradient(180deg, #f8f1e8 0%, var(--paper-bg) 100%);
+        color: var(--paper-text);
+        font: 15px/1.5 Georgia, "Times New Roman", serif;
+      }
+
+      .card {
+        max-width: 760px;
+        margin: 0 auto;
+        padding: 24px;
+        border: 1px solid var(--paper-line);
+        border-radius: 18px;
+        background: var(--paper-card);
+        box-shadow: 0 16px 40px rgba(52, 38, 23, 0.08);
+      }
+
+      h1 {
+        margin: 0 0 8px;
+        font-size: 28px;
+      }
+
+      p {
+        margin: 0 0 16px;
+        color: var(--paper-muted);
+      }
+
+      form {
+        display: grid;
+        gap: 16px;
+      }
+
+      .field {
+        display: grid;
+        gap: 6px;
+      }
+
+      label {
+        font-weight: 700;
+      }
+
+      input,
+      select {
+        width: 100%;
+        padding: 10px 12px;
+        border: 1px solid var(--paper-line);
+        border-radius: 12px;
+        background: #fffdf8;
+        color: var(--paper-text);
+        font: inherit;
+      }
+
+      .row {
+        display: grid;
+        gap: 16px;
+        grid-template-columns: 1fr 180px;
+      }
+
+      .actions {
+        display: flex;
+        gap: 10px;
+        flex-wrap: wrap;
+        margin-top: 8px;
+      }
+
+      button {
+        border: 0;
+        border-radius: 999px;
+        padding: 10px 16px;
+        background: var(--paper-soft);
+        color: var(--paper-text);
+        cursor: pointer;
+        font: inherit;
+      }
+
+      button[data-primary="true"] {
+        background: var(--paper-accent);
+        color: #fffaf2;
+      }
+
+      .status {
+        min-height: 24px;
+        font-size: 14px;
+      }
+
+      .status[data-kind="success"] {
+        color: var(--paper-ok);
+      }
+
+      .status[data-kind="error"] {
+        color: var(--paper-error);
+      }
+
+      .hint {
+        padding: 14px 16px;
+        border-radius: 14px;
+        background: #f8f1e5;
+        color: var(--paper-muted);
+      }
+
+      code {
+        font-family: Consolas, "Courier New", monospace;
+      }
+
+      @media (max-width: 640px) {
+        body {
+          padding: 16px;
+        }
+
+        .card {
+          padding: 18px;
+        }
+
+        .row {
+          grid-template-columns: 1fr;
+        }
+      }
+    </style>
+  </head>
+  <body>
+    <section class="card">
+      <h1 data-i18n="heading">Settings</h1>
+      <p data-i18n="subtitle">Configure how the extension talks to the backend service.</p>
+
+      <form id="settings-form">
+        <div class="field">
+          <label for="language" data-i18n="language_label">Language</label>
+          <select id="language" name="language">
+            <option value="en">English</option>
+            <option value="zh">中文</option>
+            <option value="ja">日本語</option>
+          </select>
+        </div>
+
+        <div class="field">
+          <label for="mode" data-i18n="mode_label">Mode</label>
+          <select id="mode" name="mode">
+            <option value="mock" data-i18n="mode_mock">Mock</option>
+            <option value="real" data-i18n="mode_real">Real API</option>
+            <option value="auto" data-i18n="mode_auto">Auto Fallback</option>
+          </select>
+        </div>
+
+        <div class="row">
+          <div class="field">
+            <label for="base-url" data-i18n="base_url_label">Backend Base URL</label>
+            <input id="base-url" name="baseUrl" type="url" data-i18n-placeholder="base_url_placeholder" placeholder="http://localhost:3000">
+          </div>
+
+          <div class="field">
+            <label for="timeout-ms" data-i18n="timeout_label">Timeout (ms)</label>
+            <input id="timeout-ms" name="timeoutMs" type="number" min="1000" step="1000">
+          </div>
+        </div>
+
+        <div class="field">
+          <label for="auth-token" data-i18n="auth_token_label">Auth Token</label>
+          <input id="auth-token" name="authToken" type="password" data-i18n-placeholder="auth_token_placeholder" placeholder="Optional bearer token">
+        </div>
+
+        <hr style="border:0;border-top:1px solid var(--paper-line);margin:8px 0">
+        <h2 style="font-size:20px;margin:0 0 12px" data-i18n="llm_heading">LLM Provider</h2>
+        <p style="margin:0 0 12px" data-i18n="llm_subtitle">Configure the external LLM service the backend should call. Leave empty to use the backend default.</p>
+
+        <div class="field">
+          <label for="llm-base-url" data-i18n="llm_base_url_label">LLM Base URL</label>
+          <input id="llm-base-url" name="llmBaseUrl" type="url" data-i18n-placeholder="llm_base_url_placeholder" placeholder="e.g. https://api.openai.com/v1">
+        </div>
+
+        <div class="field">
+          <label for="llm-api-key" data-i18n="llm_api_key_label">LLM API Key</label>
+          <input id="llm-api-key" name="llmApiKey" type="password" data-i18n-placeholder="llm_api_key_placeholder" placeholder="sk-... or your provider key">
+        </div>
+
+        <div class="field">
+          <label for="llm-model" data-i18n="llm_model_label">Model Name</label>
+          <input id="llm-model" name="llmModel" type="text" data-i18n-placeholder="llm_model_placeholder" placeholder="e.g. gpt-4o, deepseek-chat">
+        </div>
+
+        <div class="actions">
+          <button type="submit" data-primary="true" data-i18n="save_button">Save Settings</button>
+          <button type="button" id="test-llm" data-i18n="test_button">Test LLM Connection</button>
+          <button type="button" id="reset-settings" data-i18n="reset_button">Reset Defaults</button>
+          <button type="button" id="reload-settings" data-i18n="reload_button">Reload Stored Values</button>
+        </div>
+
+        <div class="status" id="status" aria-live="polite"></div>
+      </form>
+
+      <div class="hint" id="hint-text" data-i18n-html="hint_text">
+        Default local backend: <code>http://localhost:3000</code><br>
+        Use <code>mock</code> when no backend is running. Use <code>real</code> or <code>auto</code> when the backend is available.
+      </div>
+    </section>
+
+    <script src="../shared/contracts.js"></script>
+    <script src="../shared/i18n.js"></script>
+    <script src="../background/api-client.js"></script>
+    <script src="./options.js"></script>
+  </body>
+</html>

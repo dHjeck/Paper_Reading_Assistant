@@ -1,0 +1,264 @@
+:root {
+  --paper-bg: #f6efe4;
+  --paper-card: #fffaf2;
+  --paper-line: #d8d1c6;
+  --paper-text: #2f2418;
+  --paper-muted: #6e6257;
+  --paper-accent: #a85a22;
+  --paper-soft: #ecd9bc;
+}
+
+* {
+  box-sizing: border-box;
+}
+
+body {
+  margin: 0;
+  background: linear-gradient(180deg, #f8f1e8 0%, #f2e7d8 100%);
+  color: var(--paper-text);
+  font: 14px/1.45 Georgia, "Times New Roman", serif;
+}
+
+button,
+input {
+  font: inherit;
+}
+
+.panel {
+  min-height: 100vh;
+  padding: 18px;
+}
+
+.panel__header,
+.panel__card,
+.panel__tabs {
+  border: 1px solid var(--paper-line);
+  border-radius: 18px;
+  background: rgba(255, 250, 242, 0.96);
+  box-shadow: 0 12px 34px rgba(52, 38, 23, 0.08);
+}
+
+.panel__header {
+  padding: 16px;
+}
+
+.panel__eyebrow {
+  font-size: 11px;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: var(--paper-muted);
+}
+
+.panel__title {
+  margin: 6px 0 4px;
+  font-size: 22px;
+  line-height: 1.1;
+}
+
+.panel__meta {
+  color: var(--paper-muted);
+  font-size: 13px;
+}
+
+.panel__header-actions,
+.panel__tabs,
+.card__actions,
+.followup__actions {
+  display: flex;
+  gap: 8px;
+}
+
+.panel__header-actions {
+  margin-top: 14px;
+}
+
+.panel__button,
+.panel__tab,
+.card__button,
+.followup__button {
+  border: 0;
+  border-radius: 999px;
+  padding: 9px 12px;
+  background: var(--paper-soft);
+  color: var(--paper-text);
+  cursor: pointer;
+}
+
+.panel__button--accent,
+.panel__tab[data-active="true"] {
+  background: var(--paper-accent);
+  color: #fff8f0;
+}
+
+.panel__tabs {
+  margin-top: 14px;
+  padding: 8px;
+}
+
+.panel__content {
+  margin-top: 14px;
+}
+
+.panel__card {
+  padding: 16px;
+}
+
+.card__label {
+  color: var(--paper-muted);
+  font-size: 12px;
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+}
+
+.card__title {
+  margin: 4px 0 10px;
+  font-size: 18px;
+}
+
+.card__section + .card__section,
+.history__item + .history__item,
+.saved__item + .saved__item {
+  margin-top: 12px;
+  padding-top: 12px;
+  border-top: 1px solid var(--paper-line);
+}
+
+.card__section-title {
+  margin: 0 0 6px;
+  font-size: 14px;
+}
+
+.card__warning {
+  margin-bottom: 12px;
+  padding: 10px 12px;
+  border-radius: 12px;
+  background: #fff1cf;
+  color: #60461b;
+}
+
+.followup {
+  margin-top: 16px;
+  padding-top: 16px;
+  border-top: 1px solid var(--paper-line);
+}
+
+.followup__input {
+  width: 100%;
+  margin-top: 8px;
+  padding: 10px 12px;
+  border: 1px solid var(--paper-line);
+  border-radius: 12px;
+  background: #fffdf8;
+}
+
+.panel__list-empty {
+  color: var(--paper-muted);
+}
+
+/* ─── Toast (§6.1 ui.toast) ──────────────────────────────── */
+
+.toast-host {
+  position: fixed;
+  bottom: 20px;
+  left: 50%;
+  transform: translateX(-50%);
+  max-width: 90%;
+  padding: 10px 18px;
+  border-radius: 999px;
+  background: var(--paper-text);
+  color: #fff8f0;
+  font-size: 13px;
+  text-align: center;
+  cursor: pointer;
+  box-shadow: 0 8px 24px rgba(52, 38, 23, 0.18);
+  z-index: 1000;
+  animation: toast-in 0.2s ease;
+}
+
+.toast-host--success {
+  background: #3a6b2c;
+}
+
+.toast-host--error {
+  background: #9a3324;
+}
+
+.toast-host--info {
+  background: var(--paper-text);
+}
+
+@keyframes toast-in {
+  from { opacity: 0; transform: translate(-50%, 10px); }
+  to   { opacity: 1; transform: translate(-50%, 0); }
+}
+
+/* ─── Saved Filter Bar (§6.9) ────────────────────────────── */
+
+.saved__filter-bar {
+  display: flex;
+  gap: 6px;
+  flex-wrap: wrap;
+  margin: 0 0 14px;
+}
+
+.saved__filter-btn {
+  border: 1px solid var(--paper-line);
+  border-radius: 999px;
+  padding: 6px 12px;
+  background: transparent;
+  color: var(--paper-muted);
+  font-size: 12px;
+  cursor: pointer;
+}
+
+.saved__filter-btn[data-active="true"] {
+  background: var(--paper-accent);
+  color: #fff8f0;
+  border-color: var(--paper-accent);
+}
+
+/* ─── Follow-Up States (§9) ──────────────────────────────── */
+
+.followup__response {
+  margin-top: 12px;
+}
+
+.followup__status {
+  margin-top: 8px;
+  color: var(--paper-muted);
+  font-size: 13px;
+}
+
+.followup__button--ghost {
+  background: transparent;
+  color: var(--paper-muted);
+}
+
+/* ─── Card Variiants ──────────────────────────────────────── */
+
+.panel__card--empty,
+.panel__card--loading {
+  text-align: left;
+}
+
+.panel__card--loading .card__title::after {
+  content: "";
+  display: inline-block;
+  width: 10px;
+  height: 10px;
+  margin-left: 6px;
+  border: 2px solid var(--paper-soft);
+  border-top-color: var(--paper-accent);
+  border-radius: 50%;
+  animation: spin 0.8s linear infinite;
+  vertical-align: middle;
+}
+
+@keyframes spin {
+  to { transform: rotate(360deg); }
+}
+
+.card__button--accent {
+  background: var(--paper-accent);
+  color: #fff8f0;
+}

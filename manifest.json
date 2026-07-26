@@ -1,0 +1,35 @@
+{
+  "manifest_version": 3,
+  "name": "Paper Reading Assistant",
+  "version": "0.1.0",
+  "description": "A Chrome extension that helps students understand paper text and figures without leaving the reading flow.",
+  "permissions": ["storage", "activeTab", "scripting", "contextMenus", "sidePanel", "tabs"],
+  "host_permissions": ["<all_urls>"],
+  "background": {
+    "service_worker": "src/background/background.js"
+  },
+  "side_panel": {
+    "default_path": "src/sidepanel/sidepanel.html"
+  },
+  "action": {
+    "default_title": "Paper Reading Assistant",
+    "default_popup": "src/popup/popup.html"
+  },
+  "options_page": "src/options/options.html",
+  "content_scripts": [
+    {
+      "matches": ["<all_urls>"],
+      "css": ["src/content/content-script.css"],
+      "js": ["src/shared/contracts.js", "src/content/content-script.js"],
+      "run_at": "document_idle"
+    }
+  ],
+  "web_accessible_resources": [
+    {
+      "resources": [
+        "src/pdf-viewer/lib/pdf.worker.min.js"
+      ],
+      "matches": ["<all_urls>"]
+    }
+  ]
+}

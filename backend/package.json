@@ -1,0 +1,18 @@
+{
+  "name": "paper-reading-assistant-backend",
+  "version": "0.1.0",
+  "description": "Backend API service for Paper Reading Assistant Chrome extension.",
+  "type": "module",
+  "main": "src/index.js",
+  "scripts": {
+    "start": "node src/index.js",
+    "dev": "node --watch src/index.js",
+    "setup:python": "powershell -ExecutionPolicy Bypass -File scripts/setup-python.ps1"
+  },
+  "dependencies": {
+    "ajv": "^8.17.1",
+    "express": "^4.21.2",
+    "pino": "^10.3.1",
+    "pino-http": "^11.0.0"
+  }
+}

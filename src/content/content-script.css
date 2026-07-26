@@ -1,0 +1,278 @@
+/* ──────────────────────────────────────────────────────────
+   Paper Reading Assistant — Content Script Styles
+   Spec: interaction-spec §5.4 (fade in), §6.3–§6.7 (overlay),
+         §11.2 (accessibility / contrast / focus)
+   ────────────────────────────────────────────────────────── */
+
+/* ─── Floating Toolbar ───────────────────────────────────── */
+
+.pra-toolbar {
+  position: absolute;
+  z-index: 2147483646;
+  display: inline-flex;
+  gap: 6px;
+  align-items: center;
+  padding: 7px 10px;
+  border: 1px solid #d8d1c6;
+  border-radius: 999px;
+  background: #fff8ed;
+  box-shadow: 0 8px 28px rgba(45, 36, 22, 0.15);
+  font-family: Georgia, "Times New Roman", serif;
+
+  /* Always laid out so offsetWidth is reliable before first show */
+  visibility: hidden;
+  opacity: 0;
+  transform: translateY(-4px);
+  transition: opacity 120ms ease-out,
+              transform 120ms ease-out,
+              visibility 0s linear 120ms;
+}
+
+.pra-toolbar[data-visible="true"] {
+  visibility: visible;
+  opacity: 1;
+  transform: translateY(0);
+  transition: opacity 120ms ease-out,
+              transform 120ms ease-out,
+              visibility 0s linear 0s;
+}
+
+/* Busy state: dim slightly to signal processing (spec §5.5) */
+.pra-toolbar[data-state="busy"] {
+  opacity: 0.7;
+  pointer-events: none;
+}
+
+/* Disabled state: selection too long etc. (spec §5.5) */
+.pra-toolbar[data-state="disabled"] {
+  border-color: #c4a46a;
+  background: #fef5e7;
+}
+
+.pra-toolbar button {
+  border: 0;
+  padding: 6px 12px;
+  border-radius: 999px;
+  background: #f0e1c3;
+  color: #3d2f1f;
+  cursor: pointer;
+  font-size: 12px;
+  font-family: inherit;
+  line-height: 1;
+  transition: background 80ms ease-out,
+              transform 60ms ease-out;
+}
+
+.pra-toolbar button:hover {
+  background: #e6d1a6;
+}
+
+.pra-toolbar button:active {
+  transform: scale(0.95);
+}
+
+.pra-toolbar button:disabled {
+  opacity: 0.4;
+  cursor: default;
+}
+
+.pra-toolbar button:focus-visible {
+  outline: 2px solid #9a5b1f;
+  outline-offset: 2px;
+}
+
+/* Inline warning (spec §5.2 — "Selection is too long…") */
+.pra-toolbar__warning {
+  font-size: 12px;
+  color: #8a5a10;
+  padding: 4px 8px;
+  white-space: nowrap;
+  font-style: italic;
+}
+
+/* ─── Figure Capture Overlay ────────────────────────────── */
+
+.pra-overlay {
+  position: fixed;
+  inset: 0;
+  z-index: 2147483645;
+  display: none;
+  cursor: crosshair;
+  overflow: hidden;
+}
+
+.pra-overlay[data-visible="true"] {
+  display: block;
+  animation: pra-overlay-fade 150ms ease-out;
+}
+
+@keyframes pra-overlay-fade {
+  from { opacity: 0; }
+  to   { opacity: 1; }
+}
+
+/* State-specific cursor (spec §6.6) */
+.pra-overlay[data-state="selecting"] {
+  cursor: crosshair;
+}
+
+.pra-overlay[data-state="review"] {
+  cursor: default;
+}
+
+.pra-overlay[data-state="submitting"] {
+  cursor: wait;
+  pointer-events: none;
+}
+
+.pra-overlay[data-state="submitting"] .pra-overlay__actions {
+  opacity: 0.6;
+}
+
+/* Top instruction hint (spec §6.3) */
+.pra-overlay__hint {
+  position: fixed;
+  top: 16px;
+  left: 50%;
+  transform: translateX(-50%);
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 10px 16px;
+  border-radius: 999px;
+  background: rgba(255, 248, 237, 0.97);
+  color: #3d2f1f;
+  font: 13px/1.2 Georgia, "Times New Roman", serif;
+  box-shadow: 0 6px 20px rgba(45, 36, 22, 0.18);
+  z-index: 2;
+}
+
+.pra-overlay__hint-cancel {
+  border: 1px solid #d8d1c6;
+  border-radius: 999px;
+  padding: 4px 10px;
+  background: transparent;
+  color: #5d4f3f;
+  font-size: 12px;
+  font-family: inherit;
+  cursor: pointer;
+  transition: background 80ms ease-out;
+}
+
+.pra-overlay__hint-cancel:hover {
+  background: #f0e1c3;
+}
+
+.pra-overlay__hint-cancel:focus-visible {
+  outline: 2px solid #9a5b1f;
+  outline-offset: 2px;
+}
+
+/* Selection rectangle (spec §6.4) ─ dim non-selected area via box-shadow */
+.pra-overlay__selection {
+  position: fixed;
+  border: 2px solid #b86020;
+  background: rgba(255, 255, 255, 0.06);
+  box-shadow: 0 0 0 9999px rgba(25, 20, 15, 0.35);
+  z-index: 1;
+  transition: border-color 100ms ease-out;
+}
+
+.pra-overlay[data-state="selecting"] .pra-overlay__selection {
+  border-color: #d4882e;
+  border-style: dashed;
+}
+
+.pra-overlay[data-state="review"] .pra-overlay__selection {
+  border-color: #b86020;
+  border-style: solid;
+}
+
+/* Small region warning (spec §6.7) */
+.pra-overlay__warning {
+  position: fixed;
+  z-index: 2;
+  padding: 6px 12px;
+  border-radius: 8px;
+  background: rgba(255, 248, 237, 0.97);
+  color: #8a5a10;
+  font: 12px/1.3 Georgia, "Times New Roman", serif;
+  border: 1px solid #e8d4a8;
+  box-shadow: 0 4px 12px rgba(45, 36, 22, 0.12);
+  max-width: 300px;
+}
+
+/* Confirmation action bar (spec §6.5) */
+.pra-overlay__actions {
+  position: fixed;
+  display: flex;
+  gap: 8px;
+  padding: 8px 10px;
+  border-radius: 12px;
+  background: rgba(255, 248, 237, 0.98);
+  box-shadow: 0 8px 28px rgba(45, 36, 22, 0.2);
+  z-index: 2;
+  transition: opacity 100ms ease-out;
+}
+
+.pra-overlay__actions button {
+  border: 1px solid #d8d1c6;
+  border-radius: 999px;
+  padding: 8px 14px;
+  background: #f0e1c3;
+  color: #3d2f1f;
+  cursor: pointer;
+  font-size: 12px;
+  font-family: Georgia, "Times New Roman", serif;
+  transition: background 80ms ease-out,
+              transform 60ms ease-out;
+}
+
+.pra-overlay__actions button:hover {
+  background: #e6d1a6;
+}
+
+.pra-overlay__actions button:active {
+  transform: scale(0.95);
+}
+
+.pra-overlay__actions button:disabled {
+  opacity: 0.4;
+  cursor: default;
+}
+
+.pra-overlay__actions button:focus-visible {
+  outline: 2px solid #9a5b1f;
+  outline-offset: 2px;
+}
+
+/* Primary action emphasis (spec §6.5 — "Use This Region") */
+.pra-overlay__actions button[data-primary="true"] {
+  background: #b86020;
+  color: #fff8ed;
+  border-color: #9a4f1a;
+  font-weight: 600;
+}
+
+.pra-overlay__actions button[data-primary="true"]:hover {
+  background: #a0561c;
+}
+
+/* ─── Responsive ────────────────────────────────────────── */
+
+@media (max-width: 480px) {
+  .pra-toolbar {
+    gap: 4px;
+    padding: 6px 8px;
+  }
+
+  .pra-toolbar button {
+    padding: 5px 8px;
+    font-size: 11px;
+  }
+
+  .pra-overlay__actions {
+    flex-wrap: wrap;
+    justify-content: center;
+  }
+}
