@@ -11,6 +11,7 @@ The following features are currently implemented:
 - Chrome Manifest V3 extension with popup, options page, and side panel.
 - Text selection toolbar for explaining, simplifying, defining, and saving selected text.
 - Structured result cards with contextual follow-up questions.
+- Figure-region selection and multimodal image explanation, with follow-up questions about the generated result.
 - Saved items and per-paper reading history stored in `chrome.storage.local`.
 - Full webpage summarization using cleaned HTML with a plain-text fallback.
 - Local PDF Workspace with PDF rendering, page navigation, zoom, text selection, and full-document summarization.
@@ -21,7 +22,7 @@ The following features are currently implemented:
 - Backend request validation, rate limiting, optional API authentication, request IDs, structured logging, and sensitive-header redaction.
 - Retry handling for failed text, figure, and document-summary requests.
 
-> **Testing status:** 图片选择功能未测试。The figure-region selection and figure explanation workflow is implemented but has not yet been manually verified.
+> **Testing status:** Image explanation and follow-up questions are supported. The end-to-end image workflow has currently been tested only with Kimi vision models; other vision-model families are implemented but not yet verified.
 
 ## Quick Start
 
@@ -77,7 +78,7 @@ After loading, run through this quick checklist:
 - Click **Save** on the result → toast appears saying "Saved to this paper"; switch to the **Saved** tab to see the item.
 - Switch to the **History** tab → the result appears as a history item with an "Open" button.
 - Click **Ask Follow-Up** on a result → an input field appears; type a question and press Enter → a follow-up response appears below the result.
-- Click **Start Figure Selection** in the side panel header → a full-screen overlay appears with crosshair cursor; drag to select a region → confirm with "Use This Region" → a figure result card appears (partial success with a caution note in mock mode).
+- Click **Start Figure Selection** in the side panel header → a full-screen overlay appears with crosshair cursor; drag to select a region → confirm with "Use This Region" → a figure result card appears. Real multimodal testing has currently been completed only with Kimi vision models.
 
 For the full QA matrix and manual smoke test procedures, see [docs/qa-checklist.md](docs/qa-checklist.md).
 
