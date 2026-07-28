@@ -22,7 +22,7 @@ The following features are currently implemented:
 - Backend request validation, rate limiting, optional API authentication, request IDs, structured logging, and sensitive-header redaction.
 - Retry handling for failed text, figure, and document-summary requests.
 
-> **Testing status:** Image explanation and follow-up questions are supported. The end-to-end image workflow has currently been tested only with Kimi vision models; other vision-model families are implemented but not yet verified.
+> **Testing status:** Image explanation and follow-up questions are supported. The end-to-end image workflow has currently been tested only with Kimi vision models; other vision models have not been tested and may have issues. Please report any problems by submitting an issue.
 
 ## Quick Start
 
