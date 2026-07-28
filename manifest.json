@@ -1,7 +1,7 @@
 {
   "manifest_version": 3,
   "name": "Paper Reading Assistant",
-  "version": "0.1.0",
+  "version": "0.1.1",
   "description": "A Chrome extension that helps students understand paper text and figures without leaving the reading flow.",
   "permissions": ["storage", "activeTab", "scripting", "contextMenus", "sidePanel", "tabs"],
   "host_permissions": ["<all_urls>"],

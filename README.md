@@ -58,7 +58,7 @@ chrome.storage.local.set({
   "paperReadingAssistant.apiConfig": {
     baseUrl: "http://localhost:3000",
     mode: "real",
-    timeoutMs: 30000,
+    timeoutMs: 75000,
     authToken: null
   }
 })

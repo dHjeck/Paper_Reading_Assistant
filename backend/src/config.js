@@ -86,7 +86,9 @@ export const config = {
     defaultModel: env.LLM_MODEL || 'gpt-4o-mini',
     defaultBaseUrl: env.LLM_BASE_URL || null,
     defaultApiKey: env.LLM_API_KEY || null,
-    timeoutMs: parseIntSafe(env.LLM_TIMEOUT_MS, 30000),
+    timeoutMs: parseIntSafe(env.LLM_TIMEOUT_MS, 60000),
+    maxRetries: parseIntSafe(env.LLM_MAX_RETRIES, 1),
+    retryBaseMs: parseIntSafe(env.LLM_RETRY_BASE_MS, 750),
   },
 
   // Document conversion (markitdown subprocess)

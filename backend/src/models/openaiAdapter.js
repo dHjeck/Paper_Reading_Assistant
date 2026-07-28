@@ -33,6 +33,14 @@ const VISION_MODELS = [
   'claude-3.5',
   'gemini-1.5',
   'gemini-2',
+  'kimi-k2.5',
+  'kimi-k2.6',
+  'kimi-k2.7-code',
+  'kimi-k2.7-code-highspeed',
+  'kimi-k3',
+  'moonshot-v1-8k-vision',
+  'moonshot-v1-32k-vision',
+  'moonshot-v1-128k-vision',
 ];
 
 /**
@@ -111,44 +119,84 @@ async function callCompletions({ baseUrl, apiKey, model, messages }) {
   const body = JSON.stringify({
     model,
     messages,
-    temperature: 0.3,
+    // Do not force a temperature. Some OpenAI-compatible models only
+    // accept their provider default (for example, Kimi K2.6 requires 1).
     max_tokens: 2000,
     response_format: { type: 'json_object' },
   });
 
-  const controller = new AbortController();
-  const timer = setTimeout(() => controller.abort(), config.llm.timeoutMs);
+  const retryableStatuses = new Set([429, 502, 503, 504]);
+  const maxRetries = Math.max(0, config.llm.maxRetries || 0);
 
-  try {
-    const res = await fetch(url, {
-      method: 'POST',
-      headers,
-      body,
-      signal: controller.signal,
-    });
-
-    if (!res.ok) {
-      let detail = `HTTP ${res.status}`;
-      try {
-        const errBody = await res.json();
-        if (errBody?.error?.message) {
-          detail = errBody.error.message;
-        }
-      } catch {
-        // non-JSON error body
-      }
-      throw new Error(`LLM API error: ${detail}`);
-    }
-
-    const data = await res.json();
-    const content = data?.choices?.[0]?.message?.content;
-    if (!content) {
-      throw new Error('LLM API returned empty content');
-    }
-    return content;
-  } finally {
-    clearTimeout(timer);
+  function isRetryableDetail(detail) {
+    return /overload|try again|rate.?limit|temporar(?:y|ily)|unavailable/i.test(detail || '');
   }
+
+  function retryDelayMs(res, attempt) {
+    const retryAfterHeader = res?.headers?.get?.('retry-after');
+    const retryAfter = retryAfterHeader ? Number(retryAfterHeader) : NaN;
+    if (Number.isFinite(retryAfter) && retryAfter >= 0) {
+      return Math.min(retryAfter * 1000, 5000);
+    }
+    const base = Math.max(100, config.llm.retryBaseMs || 750);
+    return Math.min(base * 2 ** attempt + Math.round(Math.random() * 250), 5000);
+  }
+
+  function wait(ms) {
+    return new Promise(resolve => setTimeout(resolve, ms));
+  }
+
+  for (let attempt = 0; attempt <= maxRetries; attempt += 1) {
+    const controller = new AbortController();
+    const timer = setTimeout(() => controller.abort(), config.llm.timeoutMs);
+
+    try {
+      const res = await fetch(url, {
+        method: 'POST',
+        headers,
+        body,
+        signal: controller.signal,
+      });
+
+      if (!res.ok) {
+        let detail = `HTTP ${res.status}`;
+        try {
+          const errBody = await res.json();
+          if (errBody?.error?.message) {
+            detail = errBody.error.message;
+          }
+        } catch {
+          // non-JSON error body
+        }
+
+        const canRetry =
+          attempt < maxRetries &&
+          (retryableStatuses.has(res.status) || isRetryableDetail(detail));
+        if (canRetry) {
+          const delayMs = retryDelayMs(res, attempt);
+          getLogger().warn(
+            { model, statusCode: res.status, attempt: attempt + 1, delayMs },
+            'LLM provider temporarily unavailable; retrying'
+          );
+          await wait(delayMs);
+          continue;
+        }
+
+        throw new Error(`LLM API error: ${detail}`);
+      }
+
+      const data = await res.json();
+      const content = data?.choices?.[0]?.message?.content;
+      if (!content) {
+        throw new Error('LLM API returned empty content');
+      }
+      return content;
+    } finally {
+      clearTimeout(timer);
+    }
+  }
+
+  throw new Error('LLM API request failed after retries');
 }
 
 // ── JSON response parsing with fallback ─────────────────────────
@@ -226,11 +274,11 @@ function buildMessages(system, user, imageData) {
     messages.push({
       role: 'user',
       content: [
-        { type: 'text', text: user },
         {
           type: 'image_url',
-          image_url: { url: imageData.dataUrl, detail: 'auto' },
+          image_url: { url: imageData.dataUrl },
         },
+        { type: 'text', text: user },
       ],
     });
   } else {

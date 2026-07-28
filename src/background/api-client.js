@@ -36,13 +36,14 @@
   }
 
   var DEBUG_PREFIX = '[PRA api-client]';
+  var MIN_REQUEST_TIMEOUT_MS = 75000;
 
   // ─── Configuration ────────────────────────────────────────
 
   var DEFAULT_CONFIG = {
     baseUrl: 'http://localhost:3000',
     mode: 'mock', // "mock" | "real" | "auto"
-    timeoutMs: 30000,
+    timeoutMs: MIN_REQUEST_TIMEOUT_MS,
     authToken: null, // Bearer token; null = omit Authorization header
     llmBaseUrl: null, // LLM provider base URL; null = omit X-LLM-Base-Url header
     llmApiKey: null, // LLM provider API key; null = omit X-LLM-Api-Key header
@@ -288,6 +289,12 @@
         ? merged.mode
         : DEFAULT_CONFIG.mode;
     var timeoutMs = Number(merged.timeoutMs);
+    // The browser must wait longer than the backend's 60-second provider
+    // timeout. Clamp legacy and manually-entered shorter values so the
+    // client cannot abort a valid in-flight response first.
+    if (!Number.isFinite(timeoutMs) || timeoutMs < MIN_REQUEST_TIMEOUT_MS) {
+      timeoutMs = MIN_REQUEST_TIMEOUT_MS;
+    }
     var authToken =
       typeof merged.authToken === 'string' && merged.authToken.trim()
         ? merged.authToken.trim()
@@ -312,7 +319,7 @@
       baseUrl,
       mode,
       timeoutMs:
-        Number.isFinite(timeoutMs) && timeoutMs > 0
+        Number.isFinite(timeoutMs) && timeoutMs >= MIN_REQUEST_TIMEOUT_MS
           ? Math.round(timeoutMs)
           : DEFAULT_CONFIG.timeoutMs,
       authToken,

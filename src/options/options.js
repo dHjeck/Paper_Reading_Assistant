@@ -3,10 +3,11 @@
 
   var Shared = globalThis.PaperReadingAssistantShared;
   var STORAGE_KEY = Shared.CONFIG_STORAGE_KEY;
+  var MIN_REQUEST_TIMEOUT_MS = 75000;
   var DEFAULT_CONFIG = {
     baseUrl: 'http://localhost:3000',
     mode: 'mock',
-    timeoutMs: 30000,
+    timeoutMs: MIN_REQUEST_TIMEOUT_MS,
     authToken: '',
     llmBaseUrl: '',
     llmApiKey: '',
@@ -116,7 +117,7 @@
       return null;
     }
 
-    if (!Number.isFinite(timeoutMs) || timeoutMs < 1000) {
+    if (!Number.isFinite(timeoutMs) || timeoutMs < MIN_REQUEST_TIMEOUT_MS) {
       setStatus(t('error_timeout_invalid'), 'error');
       timeoutInput.focus();
       return null;
@@ -149,6 +150,10 @@
 
   function normalizeConfig(input) {
     var next = Object.assign({}, DEFAULT_CONFIG, input || {});
+    var timeoutMs = Number(next.timeoutMs);
+    if (!Number.isFinite(timeoutMs) || timeoutMs < MIN_REQUEST_TIMEOUT_MS) {
+      timeoutMs = MIN_REQUEST_TIMEOUT_MS;
+    }
     return {
       baseUrl:
         typeof next.baseUrl === 'string' && next.baseUrl.trim()
@@ -159,8 +164,8 @@
           ? next.mode
           : DEFAULT_CONFIG.mode,
       timeoutMs:
-        Number.isFinite(Number(next.timeoutMs)) && Number(next.timeoutMs) >= 1000
-          ? Math.round(Number(next.timeoutMs))
+        Number.isFinite(timeoutMs) && timeoutMs >= MIN_REQUEST_TIMEOUT_MS
+          ? Math.round(timeoutMs)
           : DEFAULT_CONFIG.timeoutMs,
       authToken:
         typeof next.authToken === 'string'
